@@ -15,9 +15,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 #### Changed
 
 -   Default PHP version bumped to 8.3 by @VirtuBox
+-   FastCGI cache stored on disk (`/var/cache/nginx-fastcgi`, 2G, 7 days) instead of a 256M tmpfs, `/var/run/nginx-cache` kept as a symlink by @jadrians
+-   FastCGI cache key ignores analytics/ads query strings (`utm_*`, `gclid`, `fbclid`...) by @jadrians
 
 #### Fixed
 
+-   FastCGI cache no longer stores 5xx/499 responses (`any 1h` removed) by @jadrians
+-   Pages removed by nginx-helper "purge all" were still served for up to 60s (`open_file_cache off` in the PHP location) by @jadrians
 -   Fix html site creation by @VirtuBox in #703
 
 ### v3.21.3 - 2024-06-14
