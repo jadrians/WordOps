@@ -15,6 +15,7 @@ from wo.cli.plugins.sitedb import (getAllsites,
                                    getSiteInfo, updateSiteInfo)
 from wo.core.acme import WOAcme
 from wo.core.domainvalidate import WODomain
+from wo.core.fastcgicache import WOFastCGICache
 from wo.core.fileutils import WOFileUtils
 from wo.core.git import WOGit
 from wo.core.logging import Log
@@ -1068,6 +1069,7 @@ class WOSiteUpdateController(CementBaseController):
             updateSiteInfo(self, wo_domain, stype=stype, cache=cache,
                            ssl=bool(check_site.is_ssl),
                            php_version=check_php_version)
+        WOFastCGICache.sync_site(self, wo_domain, data['webroot'], cache)
         Log.info(self, "Successfully updated site"
                  " http://{0}".format(wo_domain))
         return 0

@@ -6,6 +6,7 @@ import requests
 from cement.core.controller import CementBaseController, expose
 
 from wo.core.aptget import WOAptGet
+from wo.core.fastcgicache import WOFastCGICache
 from wo.core.logging import Log
 from wo.core.services import WOService
 from wo.core.shellexec import WOShellExec
@@ -67,6 +68,7 @@ class WOCleanController(CementBaseController):
            os.path.exists('/usr/sbin/nginx')):
             Log.info(self, "Cleaning NGINX FastCGI cache")
             WOShellExec.cmd_exec(self, "rm -rf /var/run/nginx-cache/*")
+            WOFastCGICache.clean(self)
             WOService.restart_service(self, 'nginx')
         else:
             Log.error(self, "Unable to clean FastCGI cache", False)

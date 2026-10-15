@@ -9,6 +9,7 @@ from wo.core.apt_repo import WORepo
 from wo.core.aptget import WOAptGet
 from wo.core.cron import WOCron
 from wo.core.extract import WOExtract
+from wo.core.fastcgicache import WOFastCGICache
 from wo.core.fileutils import WOFileUtils
 from wo.core.git import WOGit
 from wo.core.logging import Log
@@ -246,6 +247,12 @@ def post_pref(self, apt_packages, packages, upgrade=False):
                               '{0}/fastcgi.conf'
                               .format(ngxcnf),
                               'fastcgi.mustache', data, overwrite=True)
+            # per-site FastCGI cache zones (also defines $wpfc_zone)
+            try:
+                WOFastCGICache.regenerate(self)
+            except Exception as e:
+                Log.debug(self, "{0}".format(e))
+                WOFastCGICache.ensure_default(self)
 
             # add redis cache format if not already done
             if (os.path.isfile("/etc/nginx/nginx.conf") and

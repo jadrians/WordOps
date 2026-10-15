@@ -1,0 +1,17 @@
+# FASTCGI CACHE ZONES - WordOps {{release}}
+# DO NOT MODIFY, ALL CHANGES WILL BE LOST AFTER AN WordOps (wo) UPDATE
+# Generated from the WordOps site database.
+# When per-site-fastcgi-cache is enabled in /etc/wo/wo.conf, every site using
+# fastcgi_cache (wpfc) gets its own cache zone, so purging one site does not
+# purge the cache of the other sites. Other hosts use the shared WORDPRESS zone.
+{{#zones}}
+fastcgi_cache_path {{path}} levels=1:2 keys_zone={{zone}}:{{keys_zone}} inactive={{inactive}} max_size={{max_size}} use_temp_path=off;
+{{/zones}}
+
+map $host $wpfc_zone {
+    hostnames;
+    default WORDPRESS;
+{{#hosts}}
+    {{host}} {{zone}};
+{{/hosts}}
+}

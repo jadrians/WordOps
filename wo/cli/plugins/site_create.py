@@ -10,6 +10,7 @@ from wo.cli.plugins.sitedb import (addNewSite, deleteSiteInfo,
                                    updateSiteInfo, getSiteInfo)
 from wo.core.acme import WOAcme
 from wo.core.domainvalidate import WODomain
+from wo.core.fastcgicache import WOFastCGICache
 from wo.core.git import WOGit
 from wo.core.logging import Log
 from wo.core.nginxhashbucket import hashbucket
@@ -536,6 +537,8 @@ class WOSiteCreateController(CementBaseController):
 
                 display_cache_settings(self, data)
 
+            WOFastCGICache.sync_site(self, wo_domain, wo_site_webroot,
+                                     cache)
             Log.info(self, "Successfully created site"
                      " http://{0}".format(wo_domain))
         except SiteError:

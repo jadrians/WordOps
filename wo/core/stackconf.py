@@ -1,5 +1,6 @@
 import os
 
+from wo.core.fastcgicache import WOFastCGICache
 from wo.core.logging import Log
 from wo.core.template import WOTemplate
 from wo.core.variables import WOVar
@@ -16,6 +17,8 @@ class WOConf():
         ngxcom = '/etc/nginx/common'
         if not os.path.exists(ngxcom):
             os.mkdir(ngxcom)
+        # wpfc-phpXX.conf uses $wpfc_zone
+        WOFastCGICache.ensure_default(self)
         for wo_php in wo_php_version:
             Log.debug(self, 'deploying templates for {0}'.format(wo_php))
             data = dict(upstream="{0}".format(wo_php),

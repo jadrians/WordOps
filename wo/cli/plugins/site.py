@@ -10,6 +10,7 @@ from wo.cli.plugins.sitedb import (deleteSiteInfo, getAllsites,
 from wo.cli.plugins.site_create import WOSiteCreateController
 from wo.cli.plugins.site_update import WOSiteUpdateController
 from wo.core.domainvalidate import WODomain
+from wo.core.fastcgicache import WOFastCGICache
 from wo.core.fileutils import WOFileUtils
 from wo.core.git import WOGit
 from wo.core.logging import Log
@@ -73,6 +74,8 @@ class WOSiteController(CementBaseController):
                       msg="Enabled {0} "
                       .format(wo_domain))
             updateSiteInfo(self, wo_domain, enabled=True)
+            if WOFastCGICache.enabled(self):
+                WOFastCGICache.regenerate(self)
             Log.info(self, "[" + Log.ENDC + "OK" + Log.OKBLUE + "]")
             if not WOService.reload_service(self, 'nginx'):
                 Log.error(self, "service nginx reload failed. "
@@ -114,6 +117,8 @@ class WOSiteController(CementBaseController):
                           msg="Disabled {0} "
                           .format(wo_domain))
                 updateSiteInfo(self, wo_domain, enabled=False)
+                if WOFastCGICache.enabled(self):
+                    WOFastCGICache.regenerate(self)
                 Log.info(self, "[" + Log.ENDC + "OK" + Log.OKBLUE + "]")
                 if not WOService.reload_service(self, 'nginx'):
                     Log.error(self, "service nginx reload failed. "
@@ -439,6 +444,7 @@ class WOSiteDeleteController(CementBaseController):
                 # TODO Delete nginx conf
                 removeNginxConf(self, wo_domain)
                 deleteSiteInfo(self, wo_domain)
+                WOFastCGICache.remove_site(self, wo_domain)
                 WOAcme.removeconf(self, wo_domain)
                 Log.info(self, "Deleted site {0}".format(wo_domain))
                 # else:
@@ -450,6 +456,7 @@ class WOSiteDeleteController(CementBaseController):
                 # TODO Delete nginx conf
                 removeNginxConf(self, wo_domain)
                 deleteSiteInfo(self, wo_domain)
+                WOFastCGICache.remove_site(self, wo_domain)
                 # To improve
                 if not WOFileUtils.grepcheck(
                         self, '/var/www/22222/conf/nginx/ssl.conf', wo_domain):

@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 #### Added
 
 -   Add PHP 8.4 support by @VirtuBox
+-   Optional per-site FastCGI cache zones (`per-site-fastcgi-cache` in `[nginx]` section of `wo.conf`): purging a site no longer purges the cache of every site by @jadrians
 
 #### Changed
 
